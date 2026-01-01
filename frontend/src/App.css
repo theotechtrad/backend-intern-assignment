@@ -1,0 +1,227 @@
+* {
+  box-sizing: border-box;
+}
+
+#root {
+  max-width: 960px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+@media (min-width: 640px) {
+  #root {
+    padding: 2.5rem 1.5rem 3rem;
+  }
+}
+
+header {
+  backdrop-filter: blur(12px);
+  background: rgba(15, 23, 42, 0.7);
+  border-radius: 999px;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.65);
+}
+
+header nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+header nav a {
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+@media (min-width: 640px) {
+  header {
+    margin-bottom: 1.75rem;
+  }
+
+  header nav a {
+    font-size: 0.9rem;
+    padding: 0.6rem 1.1rem;
+  }
+}
+
+header nav a:hover {
+  background: rgba(30, 64, 175, 0.85);
+  color: #eff6ff;
+}
+
+main {
+  background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.16), transparent 55%),
+    radial-gradient(circle at bottom right, rgba(52, 211, 153, 0.18), transparent 55%),
+    rgba(15, 23, 42, 0.9);
+  border-radius: 16px;
+  padding: 1.25rem 1rem;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.85);
+  color: #e5e7eb;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+@media (min-width: 640px) {
+  main {
+    border-radius: 24px;
+    padding: 2rem 2.2rem;
+  }
+}
+
+main h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.6rem;
+}
+
+main h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+input,
+textarea {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.55rem 0.75rem;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  background: rgba(15, 23, 42, 0.85);
+  color: #e5e7eb;
+  font-family: inherit;
+  font-size: 0.95rem;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+input:focus,
+textarea:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.4);
+  background: rgba(15, 23, 42, 0.95);
+}
+
+label {
+  font-size: 0.9rem;
+  color: #cbd5f5;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+@media (min-width: 640px) {
+  li {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+}
+
+li + li {
+  margin-top: 0.5rem;
+}
+
+li .task-info {
+  flex: 1;
+  min-width: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.task-meta {
+  font-size: 0.78rem;
+  color: #9ca3af;
+}
+
+.task-description {
+  margin-top: 0.15rem;
+  font-size: 0.9rem;
+}
+
+.task-description--clamped {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.task-description-toggle {
+  margin-top: 0.15rem;
+  font-size: 0.75rem;
+  color: #7dd3fc;
+  cursor: pointer;
+}
+
+.task-description-toggle:hover {
+  text-decoration: underline;
+}
+
+li strong {
+  color: #e5e7eb;
+  display: block;
+  margin-bottom: 0.1rem;
+}
+
+li button {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  box-shadow: 0 10px 15px rgba(220, 38, 38, 0.35);
+  flex-shrink: 0;
+  white-space: nowrap;
+  align-self: flex-start;
+}
+
+@media (min-width: 640px) {
+  li button {
+    align-self: center;
+  }
+}
+
+p {
+  margin-top: 0.25rem;
+}
+
+p[style*='color: red'] {
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 12px;
+  background: rgba(220, 38, 38, 0.18);
+  border: 1px solid rgba(248, 113, 113, 0.65);
+}
+
+p[style*='lightgreen'] {
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 12px;
+  background: rgba(34, 197, 94, 0.18);
+  border: 1px solid rgba(74, 222, 128, 0.7);
+}

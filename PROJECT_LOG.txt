@@ -1,0 +1,134 @@
+Backend Intern Assignment – Project Log
+======================================
+
+Backend
+-------
+
+Tech:
+- FastAPI app in `backend/app` with SQLite via SQLAlchemy (configurable to Postgres later).
+- JWT-based auth using `python-jose` and password hashing via `passlib` (pbkdf2_sha256).
+
+Main structure:
+- `app/main.py` – creates FastAPI app, sets up CORS for the React dev server, and includes routers under `/api/v1`.
+- `app/core/config.py` – basic settings including DB URL, JWT secret/algorithm, token expiry.
+- `app/core/security.py` – password hashing + access token creation.
+- `app/db/session.py` – SQLAlchemy engine, session factory, and Base.
+- `app/models/user.py` – `User` model with `id`, `email`, `hashed_password`, `is_active`, `role`, and relationship to tasks.
+- `app/models/task.py` – `Task` model with `id`, `title`, `description`, `status`, `owner_id`, `created_at`, `updated_at`.
+- `app/schemas/*` – Pydantic models for auth (`Token`, `LoginRequest`), users (`UserCreate`, `UserRead`), and tasks (`TaskCreate`, `TaskUpdate`, `TaskRead`).
+- `app/api/deps.py` – DB dependency and auth dependencies using HTTP Bearer tokens.
+- `app/api/v1/endpoints/auth.py` – registration and login endpoints.
+- `app/api/v1/endpoints/users.py` – current user and admin user listing.
+- `app/api/v1/endpoints/tasks.py` – task CRUD endpoints.
+
+Implemented APIs:
+- Health:
+  - `GET /health` – simple status check.
+
+- Auth:
+  - `POST /api/v1/auth/register` – register user with hashed password and role (default `user`).
+  - `POST /api/v1/auth/login` – returns JWT access token and token type `bearer`.
+
+- Users:
+  - `GET /api/v1/users/me` – returns current logged-in user (requires valid JWT).
+  - `GET /api/v1/users/` – returns all users (requires `admin` role).
+
+- Tasks:
+  - `POST /api/v1/tasks/` – create task for current user.
+  - `GET /api/v1/tasks/` – list tasks:
+    - normal user: only own tasks.
+    - admin: all tasks.
+  - `GET /api/v1/tasks/{task_id}` – get details of single task with owner/admin check.
+  - `PUT /api/v1/tasks/{task_id}` – update task with owner/admin check.
+  - `DELETE /api/v1/tasks/{task_id}` – delete task with owner/admin check.
+
+Security / roles:
+- Passwords are never stored directly; they are hashed using `passlib`.
+- JWT includes `sub` (user id) and `role` and has an expiry time.
+- `get_current_user` decodes token and loads the user from DB; invalid/missing tokens return 401.
+- `get_current_admin` checks the user `role` is `admin` and returns 403 if not.
+
+How to run backend:
+- From repo root:
+  - `cd backend`
+  - Create venv (first time): `python -m venv .venv`
+  - Activate (PowerShell): `. .venv/Scripts/Activate.ps1`
+  - Install deps: `pip install -r requirements.txt`
+  - Run: `python -m uvicorn app.main:app --reload --port 8000`
+- Swagger docs: `http://127.0.0.1:8000/docs`
+- ReDoc: `http://127.0.0.1:8000/redoc`
+
+Frontend
+--------
+
+Tech:
+- Vite + React (JavaScript) in `frontend/` with `react-router-dom`.
+- Custom auth context to talk to backend and store JWT in `localStorage`.
+
+Main structure:
+- `src/main.jsx` – React entrypoint.
+- `src/App.jsx` – sets up router and wraps app in `AuthProvider`.
+- `src/auth/AuthContext.jsx` – central auth logic and API helpers.
+- `src/pages/RegisterPage.jsx` – registration form.
+- `src/pages/LoginPage.jsx` – login form.
+- `src/pages/DashboardPage.jsx` – protected dashboard for viewing/creating/deleting tasks.
+- `src/App.css`, `src/index.css` – custom styling for layout, forms, and task list.
+
+Routing:
+- `/register` – registration page.
+- `/login` – login page.
+- `/dashboard` – protected; redirects to `/login` if not authenticated.
+
+Frontend auth behavior:
+- `AuthProvider` stores JWT token in React state and `localStorage`.
+- `register(email, password)` calls `POST /api/v1/auth/register`.
+- `login(email, password)` calls `POST /api/v1/auth/login`, saves `access_token`, and then calls `/api/v1/users/me` to load user info.
+- `logout()` clears token and user.
+- On app load, if there is a token in `localStorage`, it tries to fetch `/users/me` and restore session.
+
+Dashboard behavior:
+- Shows top bar with "Dashboard" and a Logout button.
+- Displays logged-in user email + role.
+- "Create Task" form posts to `/api/v1/tasks` with JWT in `Authorization: Bearer ...` header.
+- "Your Tasks" list loads from `/api/v1/tasks`:
+  - Shows title, status, and created date/time (from `created_at`).
+  - Description is shown as a 2-line preview; clicking "Show full description" expands it, and "Show less" collapses it.
+  - Delete button calls `DELETE /api/v1/tasks/{id}`.
+
+How to run frontend:
+- From repo root:
+  - `cd frontend`
+  - Install deps: `npm install`
+  - Run dev server: `npm run dev`
+- Default dev URL: `http://localhost:5173/`
+
+Checklist vs assignment
+------------------------
+
+Backend (primary focus):
+- User registration & login with password hashing and JWT auth: **Implemented**.
+- Role-based access (user vs admin): **Implemented** (admin-only user list, task visibility).
+- CRUD APIs for secondary entity (tasks): **Implemented** (create, list, get, update, delete).
+- API versioning: **Implemented** (all API routes under `/api/v1/...`).
+- Error handling & validation: **Basic** (FastAPI/Pydantic validation + HTTPException usage; can be extended).
+- API documentation (Swagger): **Available** at `/docs` with tagged routes.
+- Database schema (Postgres/MySQL/MongoDB): **SQLite for local dev**, but structured via SQLAlchemy so DB URL can be changed to Postgres.
+
+Frontend (supportive):
+- Built with React + Vite: **Yes**.
+- Register & login UI: **Yes** – `Register` and `Login` pages.
+- Protected dashboard (JWT required): **Yes** – `/dashboard` guarded by `ProtectedRoute` and `AuthContext`.
+- Perform CRUD actions on entity: **Yes** – create/list/delete tasks through dashboard.
+- Show error/success messages: **Yes** – basic messages around forms and task actions.
+
+Security & scalability notes:
+- JWT tokens are validated server-side using a secret key and expiry window.
+- Password hashing uses a strong one-way hash (`pbkdf2_sha256`) from `passlib`.
+- Project is structured into `core`, `db`, `models`, `schemas`, and `api` packages to allow adding new modules and endpoints cleanly.
+- DB is currently SQLite for simplicity; swapping `SQLALCHEMY_DATABASE_URI` to a Postgres URL in `core/config.py` would make it suitable for production with a real DB.
+
+Gaps / potential improvements:
+- No automated tests or CI configured.
+- No Docker setup or deployment manifests.
+- No separate Postman collection file; Swagger can be exported if needed.
+- Role assignment is simple (`role` string) and seeded users (e.g. default admin) are not automated.

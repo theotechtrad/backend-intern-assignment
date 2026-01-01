@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.sqlite3
+.env
+.venv/
+venv/
+.env.*
+
+# Node / frontend
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+.dist/
+.build/
+.next/
+.vite/
+
+# Editor & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+log/
+logs/
+
+# Coverage / test
+htmlcov/
+.coverage*
+.pytest_cache/
+
+# Local overrides
+*.local.json
