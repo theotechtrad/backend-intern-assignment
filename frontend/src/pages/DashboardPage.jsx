@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useAuth, API_BASE } from '../auth/AuthContext'
+import logo from '../assets/logo.png'
 
 function DashboardPage() {
   const { user, token, logout } = useAuth()
@@ -91,7 +92,7 @@ function DashboardPage() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="dashboard-header">
         <h2>Dashboard</h2>
         <button type="button" onClick={logout}>
           Logout
@@ -105,23 +106,33 @@ function DashboardPage() {
       )}
 
       <section style={{ marginTop: '1rem' }}>
-        <h3>Create Task</h3>
-        <form
-          onSubmit={handleCreate}
-          style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxWidth: 400 }}
-        >
-          <label>
-            Title
-            <input value={title} onChange={(e) => setTitle(e.target.value)} required />
-          </label>
-          <label>
-            Description
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} />
-          </label>
-          <button type="submit" disabled={loading}>
-            {loading ? 'Saving...' : 'Add Task'}
-          </button>
-        </form>
+        <div className="dashboard-main">
+          <div className="dashboard-task-column">
+            <h3>Create Task</h3>
+            <form
+              onSubmit={handleCreate}
+              style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxWidth: 420 }}
+            >
+              <label>
+                Title
+                <input value={title} onChange={(e) => setTitle(e.target.value)} required />
+              </label>
+              <label>
+                Description
+                <textarea value={description} onChange={(e) => setDescription(e.target.value)} />
+              </label>
+              <button type="submit" disabled={loading}>
+                {loading ? 'Saving...' : 'Add Task'}
+              </button>
+            </form>
+          </div>
+          <div className="dashboard-logo-panel">
+            <div className="dashboard-hero-logo-wrap">
+              <img src={logo} alt="App logo" className="dashboard-hero-logo" />
+            </div>
+            <p className="dashboard-welcome-text">Welcome to dashboard</p>
+          </div>
+        </div>
       </section>
 
       <section style={{ marginTop: '1rem' }}>
